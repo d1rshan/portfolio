@@ -63,6 +63,7 @@ class BlurryAnimatedContainer extends StatelessWidget {
       shadowColor: shadowColor,
       color: Colors.transparent,
       borderRadius: borderRadius,
+      borderOnForeground: false,
       clipBehavior: Clip.antiAlias,
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: blur, sigmaY: blur),

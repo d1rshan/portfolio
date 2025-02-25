@@ -1,8 +1,10 @@
-import 'package:blurrycontainer/blurrycontainer.dart';
+import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gap/gap.dart';
 import 'package:my_portfolio/blurry_animated_container.dart';
 import 'package:my_portfolio/content.dart';
+import 'package:timeline_tile/timeline_tile.dart';
 
 import 'package:zo_animated_border/zo_animated_border.dart';
 
@@ -31,13 +33,57 @@ class HomePage extends StatelessWidget {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              "Hi, I'm Darshan 👋",
-                              style: Theme.of(context).textTheme.headlineLarge,
+                            AnimatedTextKit(
+                              repeatForever: false,
+                              isRepeatingAnimation: false,
+                              animatedTexts: [
+                                ColorizeAnimatedText(
+                                  "Darshan Paccha",
+                                  textStyle: Theme.of(context)
+                                      .textTheme
+                                      .headlineLarge!,
+                                  colors: [
+                                    Colors.white,
+                                    Colors.grey.shade900,
+
+                                    // Color(0xFFFFFFFF), // Pure White
+                                    // Color.fromARGB(
+                                    //     255, 135, 135, 135), // Light Gray
+                                    // Colors.grey.shade900 // Black
+                                  ],
+                                ),
+                              ],
                             ),
-                            Text(
-                              "Flutter Developer | Web Developer",
-                              style: Theme.of(context).textTheme.headlineMedium,
+                            SizedBox(
+                              height: 40,
+                              child: Row(
+                                children: [
+                                  Text(
+                                    "I'm a ",
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headlineMedium,
+                                  ),
+                                  AnimatedTextKit(
+                                    repeatForever: true,
+                                    pause: Duration(seconds: 3),
+                                    animatedTexts: [
+                                      TypewriterAnimatedText(
+                                        'Flutter Developer',
+                                        textStyle: Theme.of(context)
+                                            .textTheme
+                                            .headlineMedium,
+                                      ),
+                                      TypewriterAnimatedText(
+                                        'Web Developer',
+                                        textStyle: Theme.of(context)
+                                            .textTheme
+                                            .headlineMedium,
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
                             ),
                           ],
                         ),
@@ -73,14 +119,29 @@ class HomePage extends StatelessWidget {
                     ),
                     Gap(gap),
                     Text(
-                      'Skills',
+                      'Experience',
                       style: Theme.of(context).textTheme.titleMedium,
                     ),
                     Gap(5),
-                    Wrap(
-                      children: List.generate(
-                        Content.skills.length,
-                        (index) => SkillCard(text: Content.skills[index]),
+                    SizedBox(
+                      height: 150,
+                      width: 500,
+                      child: ListView(
+                        scrollDirection: Axis.horizontal,
+                        children: [
+                          MyTimelineTile(
+                            text: 'Hack Club VITC | Flutter Developer',
+                            isDone: true,
+                          ),
+                          MyTimelineTile(
+                            text: 'GDG | Web Developer',
+                            isDone: true,
+                          ),
+                          MyTimelineTile(
+                            text: 'GDG | Web Developer',
+                            isLast: true,
+                          ),
+                        ],
                       ),
                     ),
                     Gap(100),
@@ -103,6 +164,65 @@ class HomePage extends StatelessWidget {
   }
 }
 
+class MyTimelineTile extends StatelessWidget {
+  final String text;
+  final bool isLast;
+  final bool isDone;
+  const MyTimelineTile({
+    super.key,
+    required this.text,
+    this.isDone = false,
+    this.isLast = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return TimelineTile(
+      isLast: isLast,
+      beforeLineStyle: LineStyle(
+        color: Colors.white,
+        thickness: 1,
+      ),
+      indicatorStyle: IndicatorStyle(
+        height: 30,
+        width: 30,
+        indicator: Container(
+          alignment: Alignment.center,
+          decoration: ShapeDecoration(
+            color: isDone ? Colors.white : Colors.black,
+            shape: CircleBorder(
+              side: BorderSide(color: Colors.white, width: 1),
+            ),
+          ),
+          child: Icon(
+            Icons.check,
+            color: isDone ? Colors.black : Colors.white,
+            size: 12,
+          ),
+        ),
+      ),
+      axis: TimelineAxis.horizontal,
+      alignment: TimelineAlign.start,
+      endChild: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(15),
+        ),
+        alignment: Alignment.center,
+        padding: EdgeInsets.all(20),
+        margin: EdgeInsets.only(left: 50, right: 50, top: 10),
+        child: Text(
+          text,
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: Theme.of(context).colorScheme.secondary,
+                fontWeight: FontWeight.bold,
+              ),
+        ),
+      ),
+    );
+  }
+}
+
 class MyBottomNavBar extends StatefulWidget {
   const MyBottomNavBar({super.key});
 
@@ -114,16 +234,13 @@ class _MyBottomNavBarState extends State<MyBottomNavBar> {
   bool isHovered = false;
   @override
   Widget build(BuildContext context) {
-    return ZoAnimatedGradientBorder(
-      glowOpacity: 0.1,
-      borderRadius: 30,
-      borderThickness: 2,
-      shouldAnimate: true,
-      gradientColor: [
-        Colors.grey.shade700,
-        Colors.white,
-      ],
-      duration: Duration(seconds: 5),
+    return ZoSnakeBorder(
+      duration: 10,
+      snakeHeadColor: Colors.white,
+      snakeTailColor: Colors.grey,
+      snakeTrackColor: Colors.grey.shade700,
+      borderWidth: 2,
+      borderRadius: BorderRadius.circular(30),
       child: MouseRegion(
         onEnter: (event) {
           setState(() {
@@ -138,8 +255,10 @@ class _MyBottomNavBarState extends State<MyBottomNavBar> {
         child: BlurryAnimatedContainer(
           duration: Duration(milliseconds: 300),
           padding: EdgeInsets.symmetric(
-              horizontal: isHovered ? 30 : 20, vertical: 10),
-          blur: 10,
+            horizontal: isHovered ? 30 : 20,
+            vertical: 10,
+          ),
+          blur: 30,
           elevation: 0,
           color: Colors.transparent,
           borderRadius: const BorderRadius.all(Radius.circular(30)),
@@ -147,15 +266,15 @@ class _MyBottomNavBarState extends State<MyBottomNavBar> {
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: [
-              MyBottomNavItem(icon: Icons.home),
+              MyBottomNavItem(icon: FontAwesomeIcons.github),
               _buildDivider(),
-              MyBottomNavItem(icon: Icons.code),
+              MyBottomNavItem(icon: FontAwesomeIcons.linkedin),
               _buildDivider(),
-              MyBottomNavItem(icon: Icons.business),
+              MyBottomNavItem(icon: FontAwesomeIcons.instagram),
               _buildDivider(),
-              MyBottomNavItem(icon: Icons.email),
+              MyBottomNavItem(icon: FontAwesomeIcons.envelope),
               _buildDivider(),
-              MyBottomNavItem(icon: Icons.nightlight),
+              MyBottomNavItem(icon: FontAwesomeIcons.moon),
             ],
           ),
         ),
@@ -190,7 +309,7 @@ class _MyBottomNavItemState extends State<MyBottomNavItem> {
       child: AnimatedContainer(
         duration: Duration(milliseconds: 200),
         padding: EdgeInsets.symmetric(horizontal: isHovered ? 25 : 10),
-        child: Icon(widget.icon, color: Colors.white, size: 28),
+        child: FaIcon(widget.icon, color: Colors.white, size: 24),
       ),
     );
   }
